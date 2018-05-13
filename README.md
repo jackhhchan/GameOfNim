@@ -6,6 +6,7 @@ try entering the following commands
 
 
 addplayer skywalker,sky,walker
+
 addplayer hansolo,han,solo
 
 startgame 10,10,skywalker,hansolo
