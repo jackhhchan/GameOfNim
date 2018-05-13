@@ -10,6 +10,7 @@ addplayer skywalker,sky,walker
 addplayer hansolo,han,solo
 
 startgame 10,10,skywalker,hansolo
+
 10
 
 
