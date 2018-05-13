@@ -9,14 +9,15 @@ public class Nimsys {
         System.out.println("Welcome to Nim\n");
         String inputFunction;
 
-        String[] inputFunctionList = new String[7];
+        String[] inputFunctionList = new String[8];
         inputFunctionList[0] = "addplayer";
         inputFunctionList[1] = "editplayer";
         inputFunctionList[2] = "removeplayer";
         inputFunctionList[3] = "displayplayer";
         inputFunctionList[4] = "resetstats";
-        inputFunctionList[5] = "startgame";
-        inputFunctionList[6] = "exit";
+        inputFunctionList[5] = "rankings";
+        inputFunctionList[6] = "startgame";
+        inputFunctionList[7] = "exit";
 
 
         do {
@@ -37,7 +38,7 @@ public class Nimsys {
                     }
                 }
             }
-            catch(Exception e)
+            catch(ArrayIndexOutOfBoundsException e)
             {
                 System.out.printf("'%s' is not a valid command.%n", input[0]);
                 System.out.println();
@@ -47,178 +48,227 @@ public class Nimsys {
              * Runs the following code if the entered command is addplayer or editplayer.
              */
 
-            if (inputFunction.equals("addplayer") || inputFunction.equals("editplayer"))
+            switch(inputFunction)
             {
-                try
-                {
-                    if (input.length != 4)
+                case "addplayer":
+                    try
                     {
-                        throw new Exception();
+                        if (input.length != 4)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    System.out.println("Incorrect number of arguments supplied to command.");
-                    System.out.println();
-                    continue;
-                }
-                String username = input[1];
-                String familyName = input[2];
-                String givenName = input[3];
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
 
-                //addplayer details based on inputs
-                switch(inputFunction)
-                {
-                    case "addplayer":
-                        game.addPlayer(username, familyName, givenName);
-                        break;
-                    case "editplayer":
-                        game.editPlayer(username, familyName, givenName);
-                }
-            }
+                    game.addPlayer(input[1], input[2], input[3]);
+                    break;
 
-            /*
-             * Runs the following code if the entered command is removeplayer or displayplayer or resetstats.
-             */
+                case "editplayer":
+                    try
+                    {
+                        if (input.length != 4)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
 
-            else if (input.length == 1 || input.length == 2) {
-                //remove player/s based on input.
-                switch (inputFunction) {
-                    case "removeplayer":
-                        if (input.length == 1) {
-                            System.out.println("Are you sure you want to remove all players? (y/n)");
-                            boolean removeAllCheck = keyboard.next().charAt(0) == 'y';
-                            if (removeAllCheck) {
-                                game.removePlayer(null);
+                    game.editPlayer(input[1], input[2], input[3]);
+                    break;
+
+                case "removeplayer":
+                    try
+                    {
+                        if (input.length > 2)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
+
+                    if (input.length == 1)
+                    {
+                        System.out.println("Are you sure you want to remove all players? (y/n)");
+                        boolean removeAllCheck = keyboard.next().charAt(0) == 'y';
+                        if (removeAllCheck) {
+                            game.removePlayer(null);
+                        }
+                    }
+                    else {
+                        game.removePlayer(input[1]);
+                    }
+                    break;
+                case "resetstats":
+                    try
+                    {
+                        if (input.length > 2)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
+
+                    if (input.length == 1) {
+                        System.out.println("Are you sure you want to remove all players? (y/n)");
+                        boolean removeAllCheck = keyboard.next().charAt(0) == 'y';
+                        if (removeAllCheck) {
+                            game.removePlayer(null);
+                        }
+                        game.resetStats(null);
+                    } else {
+                        game.resetStats(input[1]);
+                    }
+                    break;
+
+                case "rankings":
+                    try
+                    {
+                        if (input.length > 2)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
+                    if (input.length == 2 && input[1].equals("asc"))
+                    {
+                        game.rankings("asc");
+                    } else
+                    {
+                        game.rankings("desc");
+                    }
+                    break;
+
+                case "startgame":
+                    try
+                    {
+                        if (input.length != 5)
+                        {
+                            throw new Exception("Incorrect number of arguments supplied to command.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                        System.out.println();
+                        continue;
+                    }
+
+                    NimPlayer currentPlayers[];
+
+                    // Pre-game checks
+                    // if both players exists, return current players in currentPlayers array.
+                    // If not, return array as null.
+                    currentPlayers = game.startGame(Integer.parseInt(input[1]),
+                            Integer.parseInt(input[2]),
+                            input[3], input[4]);
+                    if (currentPlayers == null) {
+                        System.out.println("One of the players does not exist.");
+                    } else {
+                        // start the game since both players exists.
+                        int turnKeeper = 0;
+                        int numRemove;
+                        int upperbound = game.getUpperbound();
+
+                        while (game.getCurrentStones() > 0) {
+                            // Get current stone from game. (updated after each round.)
+                            int currentStones = game.getCurrentStones();
+                            //Print out the number of stones left in asterisks *.
+                            System.out.printf("%d stones left: ", currentStones);
+                            for (int i = 0; i < currentStones; i++) {
+                                System.out.print("*");
                             }
-                        } else {
-                            game.removePlayer(input[1]);
-                        }
-                        break;
-                    //display player based on input.
-                    case "displayplayer":
-                        if (input.length == 1) {
-                            game.displayPlayer(null);
-                        } else {
-                            game.displayPlayer(input[1]);
-                        }
-                        //reset stats of player/s based on input.
-                        break;
-                    case "resetstats":
-                        if (input.length == 1) {
-                            System.out.println("Are you sure you want to remove all players? (y/n)");
-                            boolean removeAllCheck = keyboard.next().charAt(0) == 'y';
-                            if (removeAllCheck) {
-                                game.removePlayer(null);
-                            }
-                            game.resetStats(null);
-                        } else {
-                            game.resetStats(input[1]);
-                        }
-                        break;
-                    case "rankings":
-                        if (input.length == 1 || input[1].equals("desc")) {
-                            game.rankings("desc");
-                        } else if (input[1].equals("asc")) {
-                            game.rankings("asc");
-                        }
-                        break;
-                }
-            }
-            // Check input length & function for startgame.
-            else if (input.length == 5 && inputFunction.equals("startgame"))
-            {
-                NimPlayer currentPlayers[];
+                            System.out.printf("%n");
 
-                // Pre-game checks
-                // if both players exists, return current players in currentPlayers array.
-                // If not, return array as null.
-                currentPlayers = game.startGame(Integer.parseInt(input[1]),
-                        Integer.parseInt(input[2]),
-                        input[3], input[4]);
-                if (currentPlayers == null) {
-                    System.out.println("One of the players does not exist.");
-                } else {
-                    // start the game since both players exists.
-                    int turnKeeper = 0;
-                    int numRemove;
-                    int upperbound = game.getUpperbound();
+                            //Prompt player for stone removal in alternate turns.
+                            if (turnKeeper == 0) {
+                                System.out.println(currentPlayers[0] + "'s turn - remove how many?:");
 
-                    while (game.getCurrentStones() > 0) {
-                        // Get current stone from game. (updated after each round.)
-                        int currentStones = game.getCurrentStones();
-                        //Print out the number of stones left in asterisks *.
-                        System.out.printf("%d stones left: ", currentStones);
-                        for (int i = 0; i < currentStones; i++) {
-                            System.out.print("*");
-                        }
-                        System.out.printf("%n");
-
-                        //Prompt player for stone removal in alternate turns.
-                        if (turnKeeper == 0) {
-                            System.out.println(currentPlayers[0] + "'s turn - remove how many?:");
-
-                            try
-                            {
-                                numRemove = keyboard.nextInt();
-                                if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
-                                    throw new Exception();
+                                try
+                                {
+                                    numRemove = keyboard.nextInt();
+                                    if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
+                                        throw new Exception();
+                                    }
                                 }
-                            }
-                            catch (Exception e)
-                            {
-                                System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
-                                continue;
-                            }
-
-                            currentStones -= currentPlayers[0].removeStones(numRemove);
-                            game.setCurrentStones(currentStones);
-                            turnKeeper = 1;
-                        } else if (turnKeeper == 1) {
-                            System.out.println(currentPlayers[1] + "'s turn - remove how many?:");
-
-                            try
-                            {
-                                numRemove = keyboard.nextInt();
-                                if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
-                                    throw new Exception();
+                                catch (Exception e)
+                                {
+                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
+                                    continue;
                                 }
-                            }
-                            catch (Exception e)
-                            {
-                                System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
-                                continue;
-                            }
 
-                            currentStones -= currentPlayers[1].removeStones(numRemove);
-                            game.setCurrentStones(currentStones);
-                            turnKeeper = 0;
+                                currentStones -= currentPlayers[0].removeStones(numRemove);
+                                game.setCurrentStones(currentStones);
+                                turnKeeper = 1;
+                            } else if (turnKeeper == 1) {
+                                System.out.println(currentPlayers[1] + "'s turn - remove how many?:");
+
+                                try
+                                {
+                                    numRemove = keyboard.nextInt();
+                                    if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
+                                        throw new Exception();
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
+                                    continue;
+                                }
+
+                                currentStones -= currentPlayers[1].removeStones(numRemove);
+                                game.setCurrentStones(currentStones);
+                                turnKeeper = 0;
+                            }
                         }
+                        System.out.println("Game Over");
+
+                        // Updating games played stats for both players in the game.
+                        game.updateGames(currentPlayers[0], currentPlayers[1]);
+
+                        //Prints out which player has won based on the turnKeeper's value.
+                        switch (turnKeeper) {
+                            case 0:
+                                System.out.printf("%s %s wins!%n",
+                                        currentPlayers[0].getFamilyName(),
+                                        currentPlayers[0].getGivenName());
+                                game.updateWin(currentPlayers[0]);
+
+                                break;
+                            case 1:
+                                System.out.printf("%s %s wins!%n",
+                                        currentPlayers[1].getFamilyName(),
+                                        currentPlayers[1].getGivenName());
+                                game.updateWin(currentPlayers[1]);
+                                break;
+                        }
+
+                        game.updateWinRatios(currentPlayers[0], currentPlayers[1]);
                     }
-                    System.out.println("Game Over");
-
-                    // Updating games played stats for both players in the game.
-                    game.updateGames(currentPlayers[0], currentPlayers[1]);
-
-                    //Prints out which player has won based on the turnKeeper's value.
-                    switch (turnKeeper) {
-                        case 0:
-                            System.out.printf("%s %s wins!%n",
-                                    currentPlayers[0].getFamilyName(),
-                                    currentPlayers[0].getGivenName());
-                            game.updateWin(currentPlayers[0]);
-
-                            break;
-                        case 1:
-                            System.out.printf("%s %s wins!%n",
-                                    currentPlayers[1].getFamilyName(),
-                                    currentPlayers[1].getGivenName());
-                            game.updateWin(currentPlayers[1]);
-                            break;
-                    }
-
-                    game.updateWinRatios(currentPlayers[0], currentPlayers[1]);
-                }
 
             }
             System.out.println();
@@ -227,4 +277,3 @@ public class Nimsys {
         System.exit(0);
     }
 }
-
