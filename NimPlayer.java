@@ -1,4 +1,7 @@
-public class NimPlayer {
+import java.io.Serializable;
+
+public class NimPlayer implements Serializable
+{
     private String username;
     private String givenName, familyName;
     private int gamesPlayed = 0;

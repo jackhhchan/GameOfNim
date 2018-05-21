@@ -1,5 +1,4 @@
-public class NimGame
-{
+public class NimGame {
     /**
      * Write the program for the game here.
      */
@@ -9,22 +8,18 @@ public class NimGame
     private int maxPlayers = 100;
 
     // Declaring arrays for player stats and player objects
-    private NimPlayer players[] = new NimPlayer[maxPlayers]; // stores references to player objects.
+    private NimPlayer[] players = new NimPlayer[maxPlayers]; // stores references to player objects.
     private double[] stats = new double[maxPlayers];         // stores winning ratio.
-                                                            // To be populated every time rankings is invoked.
+    // To be populated every time rankings is invoked.
 
 
-    public void addPlayer(String username, String familyName, String givenName)
-    {
+    public void addPlayer(String username, String familyName, String givenName) {
         // Search players array to make sure player doesn't already exist.
-        for (int i = 0; i < players.length; i++)
-        {
-            if (players[i] != null && players[i].getUsername().equals(username)){
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] != null && players[i].getUsername().equals(username)) {
                 System.out.println("The player already exist.");
                 return;
-            }
-            else if (players[i] == null)
-            {
+            } else if (players[i] == null) {
                 players[i] = new NimPlayer(username, familyName, givenName);
                 return;
             }
@@ -32,20 +27,15 @@ public class NimGame
 
     }
 
-    public void removePlayer(String username)
-    {
-        if (username == null)
-        {
-            for (int player = 0; player < players.length; player++)
-            {
+    public void removePlayer(String username) {
+        if (username == null) {
+            for (int player = 0; player < players.length; player++) {
                 players[player] = null;
             }
             return;
         }
-        for (int player = 0; player < players.length; player++)
-        {
-            if (players[player] != null && players[player].getUsername().equals(username))
-            {
+        for (int player = 0; player < players.length; player++) {
+            if (players[player] != null && players[player].getUsername().equals(username)) {
                 players[player] = new NimPlayer();
                 return;
             }
@@ -53,17 +43,13 @@ public class NimGame
         System.out.println("The player does not exist.");
     }
 
-    public void editPlayer(String username, String familyName, String givenName)
-    {
-        for (NimPlayer player: players)
-        {
-            if(player == null)
-            {
+    public void editPlayer(String username, String familyName, String givenName) {
+        for (NimPlayer player : players) {
+            if (player == null) {
                 continue;
             }
 
-            if (player.getUsername().equals(username))
-            {
+            if (player.getUsername().equals(username)) {
                 player.setFamilyName(familyName);
                 player.setGivenName(givenName);
                 return;
@@ -73,15 +59,11 @@ public class NimGame
     }
 
 
-    public void displayPlayer(String username)
-    {
+    public void displayPlayer(String username) {
         selectionSort(players);
-        if (username == null)
-        {
-            for (NimPlayer player: players)
-            {
-                if (player != null)
-                {
+        if (username == null) {
+            for (NimPlayer player : players) {
+                if (player != null) {
                     System.out.printf("%s,%s,%s,%d games,%d wins.%n",
                             player.getUsername(),
                             player.getFamilyName(),
@@ -94,8 +76,7 @@ public class NimGame
         }
 
         for (int player = 0; player < players.length; player++) {
-            if (players[player] == null)
-            {
+            if (players[player] == null) {
                 continue;
             }
             if (players[player].getUsername().equals(username)) {
@@ -112,40 +93,31 @@ public class NimGame
         System.out.println("The player does not exist.");
     }
 
-    public void resetStats(String username)
-    {
-        if (username != null)
-        {
-            for (NimPlayer player: players)
-            {
-                if (player != null && player.getUsername().equals(username))
-                {
+    public void resetStats(String username) {
+        if (username != null) {
+            for (NimPlayer player : players) {
+                if (player != null && player.getUsername().equals(username)) {
                     player.setGamesPlayed(0);
                     player.setGamesWon(0);
                     return;
                 }
             }
             System.out.println("The player does not exist.");
-        }
-        else
-        {
-            for (NimPlayer player: players)
-            {
+        } else {
+            for (NimPlayer player : players) {
                 player.setGamesWon(0);
                 player.setGamesPlayed(0);
             }
         }
     }
-    public void rankings(String order)
-    {
+
+    public void rankings(String order) {
         // Sort arrays alphabetically using selection sort.
         selectionSort(players);
 
         //populate stats array with win ratios.
-        for (int i = 0; i < stats.length; i++)
-        {
-            if (players[i] != null)
-            {
+        for (int i = 0; i < stats.length; i++) {
+            if (players[i] != null) {
                 stats[i] = players[i].getWinRatio();
                 System.out.println("stats:");
                 System.out.printf("%s: %f%n", players[i].getUsername(), stats[i]);
@@ -153,19 +125,14 @@ public class NimGame
         }
 
         // Stable algorithm to sort stats after alphabetically sorting players.
-        if (order.equals("asc"))
-        {
+        if (order.equals("asc")) {
             insertionSort(stats, players, "asc");
-        }
-        else if (order.equals("desc"))
-        {
+        } else if (order.equals("desc")) {
             insertionSort(stats, players, "desc");
         }
         // Print the rankings.
-        for (int i = 0; i < players.length; i++)
-        {
-            if (players[i] != null)
-            {
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] != null) {
                 System.out.printf("%5.0f%% | %10d games | %s %s%n",
                         stats[i],
                         players[i].getGamesPlayed(),
@@ -175,8 +142,7 @@ public class NimGame
         }
     }
 
-    public NimPlayer[] startGame(int initial_stones, int upperbound, String username1, String username2)
-    {
+    public NimPlayer[] startGame(int initial_stones, int upperbound, String username1, String username2) {
         NimPlayer currentPlayers[] = new NimPlayer[2];
         setCurrentStones(initial_stones);
         setUpperbound(upperbound);
@@ -184,7 +150,7 @@ public class NimGame
 
         // Search for username1 and username 2
         boolean player1exists = false, player2exists = false;
-        for (NimPlayer player: players) {
+        for (NimPlayer player : players) {
             if (player != null &&
                     player.getUsername().equals(username1)) {
                 currentPlayers[0] = player;
@@ -197,8 +163,7 @@ public class NimGame
             }
         }
         // Check if player 1 and player 2 are found.
-        if(player1exists && player2exists)
-        {
+        if (player1exists && player2exists) {
             System.out.printf("%nInitial stone count: %d%n", getCurrentStones());
             System.out.printf("Maximum stone removal: %d%n", getUpperbound());
             System.out.printf("Player 1: %s %s%n",
@@ -208,13 +173,10 @@ public class NimGame
                     currentPlayers[1].getFamilyName(),
                     currentPlayers[1].getGivenName());
             return currentPlayers;
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
-
 
 
     /**
@@ -227,8 +189,7 @@ public class NimGame
         int min_index;
         for (int i = 0; i < numPlayers; i++) {
 
-            if (players[i] != null)
-            {
+            if (players[i] != null) {
                 // Find index of smallest alphabet in the array for the current scan.
                 min_index = indexSmallest(i, players);
                 // Swaps position of the min_index with players[i]
@@ -251,8 +212,7 @@ public class NimGame
         for (int i = startIndex; i < numPlayers; i++) {
             // compare current username's first alphabet with current minimum username's first alphabet.
             if (players[i] != null &&
-                    players[i].getUsername().compareTo(min_alphabet) < 0)
-            { //if true, player[i]'s username is less than min_alphabet
+                    players[i].getUsername().compareTo(min_alphabet) < 0) { //if true, player[i]'s username is less than min_alphabet
                 min_alphabet = players[i].getUsername();
                 min_index = i;
             }
@@ -261,10 +221,9 @@ public class NimGame
     }
 
     /**
-    Swaps the position of player[a] with player[b].
+     * Swaps the position of player[a] with player[b].
      */
-    private static void swap(int a, int b, NimPlayer[] players)
-    {
+    private static void swap(int a, int b, NimPlayer[] players) {
         NimPlayer temp = players[a]; /*double stats_temp = stats[a];*/
         players[a] = players[b];/* stats[a] = stats[b];*/
         players[b] = temp; /*stats[b] = stats_temp;*/
@@ -273,18 +232,14 @@ public class NimGame
     /**
      * InsertionSort is a stable algorithm and can be used to sort winning ratio
      * after the usernames are alphabetically sorted.
-     *
      */
-    public static void insertionSort(double[] A, NimPlayer[] players, String order)
-    {
+    public static void insertionSort(double[] A, NimPlayer[] players, String order) {
         /*
         Orders in ascending order. (Min value in front)
          */
-        if (order.equals("asc"))
-        {
+        if (order.equals("asc")) {
             // Start with the 2nd position of the array and compare with its first.
-            for (int i = 1; i < A.length; i++)
-            {
+            for (int i = 1; i < A.length; i++) {
                 // Store value of current array position to be used for comparison in the iteration.
                 double v = A[i];
                 NimPlayer player_v = players[i];
@@ -293,25 +248,24 @@ public class NimGame
 
                 // Keep swapping values from of array[j]
                 // is the current array[j] > v?
-                while (j >= 0 && A[j] > v)
-                {
+                while (j >= 0 && A[j] > v) {
                     // Swap winning ratio array and players array's positions.
-                    A[j + 1] = A[j]; players[j + 1] = players[j];
+                    A[j + 1] = A[j];
+                    players[j + 1] = players[j];
                     j = j - 1;
                 }
                 // Update minimum found position with min value.
-                A[j + 1] = v; players[j + 1] = player_v;
+                A[j + 1] = v;
+                players[j + 1] = player_v;
             }
         }
 
         /*
         Orders in descending order. (Max value in front)
          */
-        else
-        {
+        else {
             // Start with the 2nd position of the array and compare with its first.
-            for (int i = 1; i < A.length; i++)
-            {
+            for (int i = 1; i < A.length; i++) {
                 // Store value of current array position to be used for comparison in the iteration.
                 double v = A[i];
                 NimPlayer player_v = players[i];
@@ -320,20 +274,20 @@ public class NimGame
 
                 // Keep swapping values from of array[j]
                 // is the current array[j] > v?
-                while (j >= 0 && A[j] < v)
-                {
+                while (j >= 0 && A[j] < v) {
                     // Swap winning ratio array and players array's positions.
-                    A[j + 1] = A[j]; players[j + 1] = players[j];
+                    A[j + 1] = A[j];
+                    players[j + 1] = players[j];
                     j = j - 1;
                 }
                 // Update minimum found position with min value.
-                A[j + 1] = v; players[j + 1] = player_v;
+                A[j + 1] = v;
+                players[j + 1] = player_v;
             }
         }
     }
 
-    public void updateGames(NimPlayer player1, NimPlayer player2)
-    {
+    public void updateGames(NimPlayer player1, NimPlayer player2) {
         player1.setGamesPlayed(player1.getGamesPlayed() + 1);
         player2.setGamesPlayed(player2.getGamesPlayed() + 1);
         System.out.println("Games played:");
@@ -342,8 +296,7 @@ public class NimGame
                 player2.getUsername(), player2.getGamesPlayed());
     }
 
-    public void updateWin(NimPlayer winner)
-    {
+    public void updateWin(NimPlayer winner) {
         winner.setGamesWon(winner.getGamesWon() + 1);
         winner.updateWinRatio();
         System.out.println("Games won:");
@@ -351,29 +304,39 @@ public class NimGame
                 winner.getUsername(), winner.getGamesWon());
     }
 
-    public void updateWinRatios(NimPlayer player1, NimPlayer player2)
-    {
+    public void updateWinRatios(NimPlayer player1, NimPlayer player2) {
         player1.updateWinRatio();
         player2.updateWinRatio();
     }
 
 
-    public int getUpperbound()
-    {
+    public int getUpperbound() {
         return this.upperbound;
     }
-    private void setUpperbound(int upperbound)
-    {
+
+    private void setUpperbound(int upperbound) {
         this.upperbound = upperbound;
     }
 
-    public int getCurrentStones()
-    {
+    public int getCurrentStones() {
         return this.currentStones;
     }
-    public void setCurrentStones(int newStones)
-    {
+
+    public void setCurrentStones(int newStones) {
         this.currentStones = newStones;
     }
-}
 
+    public NimPlayer[] getPlayers() {
+        return this.players;
+    }
+
+    public void setPlayers(NimPlayer[] players) {
+        for (int i = 0; i < players.length; i++)
+        {
+            if (players[i] != null)
+            {
+                this.players[i] = players[i];
+            }
+        }
+    }
+}

@@ -1,10 +1,31 @@
 import java.util.Scanner;
+import java.io.*;
 
 public class Nimsys {
 
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
         NimGame game = new NimGame();
+        ObjectInputStream inStream;
+        ObjectOutputStream outStream = null;
+
+        //Load in previous games records if exists.
+        try
+        {
+            inStream = new ObjectInputStream(new FileInputStream("players.dat"));
+            NimPlayer[] players = (NimPlayer[]) inStream.readObject();
+            game.setPlayers(players);
+        }
+        catch(Exception e){}
+
+        try
+        {
+            outStream = new ObjectOutputStream(new FileOutputStream("players.dat"));
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         System.out.println("Welcome to Nim\n");
         String inputFunction;
@@ -45,7 +66,7 @@ public class Nimsys {
             }
 
             /*
-             * Runs the following code if the entered command is addplayer or editplayer.
+             * Runs the program based on the entered input function.
              */
 
             switch(inputFunction)
@@ -53,7 +74,7 @@ public class Nimsys {
                 case "addplayer":
                     try
                     {
-                        if (input.length != 4)
+                        if (input.length < 4)
                         {
                             throw new Exception("Incorrect number of arguments supplied to command.");
                         }
@@ -71,7 +92,7 @@ public class Nimsys {
                 case "editplayer":
                     try
                     {
-                        if (input.length != 4)
+                        if (input.length < 4)
                         {
                             throw new Exception("Incorrect number of arguments supplied to command.");
                         }
@@ -87,19 +108,19 @@ public class Nimsys {
                     break;
 
                 case "removeplayer":
-                    try
-                    {
-                        if (input.length > 2)
-                        {
-                            throw new Exception("Incorrect number of arguments supplied to command.");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.out.println(e.getMessage());
-                        System.out.println();
-                        continue;
-                    }
+//                    try
+//                    {
+//                        if (input.length > 2)
+//                        {
+//                            throw new Exception("Incorrect number of arguments supplied to command.");
+//                        }
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        System.out.println(e.getMessage());
+//                        System.out.println();
+//                        continue;
+//                    }
 
                     if (input.length == 1)
                     {
@@ -113,20 +134,31 @@ public class Nimsys {
                         game.removePlayer(input[1]);
                     }
                     break;
+
+                case "displayplayer":
+                    if (input.length == 1)
+                    {
+                        game.displayPlayer(null);
+                    }
+                    else
+                    {
+                        game.displayPlayer(input[1]);
+                    }
+                    break;
                 case "resetstats":
-                    try
-                    {
-                        if (input.length > 2)
-                        {
-                            throw new Exception("Incorrect number of arguments supplied to command.");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.out.println(e.getMessage());
-                        System.out.println();
-                        continue;
-                    }
+//                    try
+//                    {
+//                        if (input.length > 2)
+//                        {
+//                            throw new Exception("Incorrect number of arguments supplied to command.");
+//                        }
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        System.out.println(e.getMessage());
+//                        System.out.println();
+//                        continue;
+//                    }
 
                     if (input.length == 1) {
                         System.out.println("Are you sure you want to remove all players? (y/n)");
@@ -141,19 +173,19 @@ public class Nimsys {
                     break;
 
                 case "rankings":
-                    try
-                    {
-                        if (input.length > 2)
-                        {
-                            throw new Exception("Incorrect number of arguments supplied to command.");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.out.println(e.getMessage());
-                        System.out.println();
-                        continue;
-                    }
+//                    try
+//                    {
+//                        if (input.length > 2)
+//                        {
+//                            throw new Exception("Incorrect number of arguments supplied to command.");
+//                        }
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        System.out.println(e.getMessage());
+//                        System.out.println();
+//                        continue;
+//                    }
                     if (input.length == 2 && input[1].equals("asc"))
                     {
                         game.rankings("asc");
@@ -211,13 +243,16 @@ public class Nimsys {
                                 try
                                 {
                                     numRemove = keyboard.nextInt();
+                                    // reads the blank line after the int, if not it will be read at the start of the loop
+                                    keyboard.nextLine();
                                     if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
                                         throw new Exception();
                                     }
                                 }
                                 catch (Exception e)
                                 {
-                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
+                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n",
+                                            upperbound);
                                     continue;
                                 }
 
@@ -230,13 +265,15 @@ public class Nimsys {
                                 try
                                 {
                                     numRemove = keyboard.nextInt();
+                                    keyboard.nextLine();
                                     if (numRemove > upperbound || numRemove < 1 || numRemove > currentStones) {
                                         throw new Exception();
                                     }
                                 }
                                 catch (Exception e)
                                 {
-                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n", upperbound);
+                                    System.out.printf("%nInvalid move. You must remove between 1 and %d stones.%n%n",
+                                            upperbound);
                                     continue;
                                 }
 
@@ -272,7 +309,30 @@ public class Nimsys {
 
             }
             System.out.println();
+
         } while (!inputFunction.equals("exit"));
+
+
+        NimPlayer[] players = game.getPlayers();
+
+        try
+        {
+            outStream.writeObject(players);
+        }catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        try
+        {
+            outStream.flush();
+            outStream.close();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Unable to flush or close outputstream.");
+            System.out.println(e.getMessage());
+        }
 
         System.exit(0);
     }
