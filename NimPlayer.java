@@ -1,11 +1,11 @@
 import java.io.Serializable;
 
-public class NimPlayer implements Serializable
+public abstract class NimPlayer implements Serializable
 {
     private String username;
     private String givenName, familyName;
-    private int gamesPlayed = 0;
-    private int gamesWon = 0;
+    private int gamesPlayed;
+    private int gamesWon;
     private double winRatio;
 
     // Constructor method to create player.
@@ -67,16 +67,15 @@ public class NimPlayer implements Serializable
 
     /*to be called to update win ratio of player every time.*/
 
-    public void updateWinRatio() {
+    public void updateWinRatio()
+    {
         double gamesWon = (double) getGamesWon();
         double gamesPlayed = (double) getGamesPlayed();
         setWinRatio((gamesWon / gamesPlayed) * 100);
         System.out.printf("%s's win ratio updated: %f%n", getUsername(), getWinRatio());
     }
 
-    public int removeStones(int removestones) {
-        return removestones;
-    }
+    public abstract int removeStones(int numRemove, int currentStones, int upperbound, boolean win);
 
     public String toString() {
         return username;

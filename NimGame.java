@@ -8,23 +8,44 @@ public class NimGame {
     private int maxPlayers = 100;
 
     // Declaring arrays for player stats and player objects
-    private NimPlayer[] players = new NimPlayer[maxPlayers]; // stores references to player objects.
+    private NimPlayer[] players = new NimPlayer[maxPlayers];  // stores references to player objects.
     private double[] stats = new double[maxPlayers];         // stores winning ratio.
     // To be populated every time rankings is invoked.
 
 
-    public void addPlayer(String username, String familyName, String givenName) {
+    public void addPlayer(String username, String familyName, String givenName)
+    {
         // Search players array to make sure player doesn't already exist.
-        for (int i = 0; i < players.length; i++) {
-            if (players[i] != null && players[i].getUsername().equals(username)) {
+        for (int i = 0; i < players.length; i++)
+        {
+            if (players[i] != null && players[i].getUsername().equals(username))
+            {
                 System.out.println("The player already exist.");
                 return;
-            } else if (players[i] == null) {
-                players[i] = new NimPlayer(username, familyName, givenName);
+            }
+            else if (players[i] == null)
+            {
+                players[i] = new NimHumanPlayer(username, familyName, givenName);
                 return;
             }
         }
 
+    }
+    public void addAIPlayer(String username, String familyName, String givenName)
+    {
+        for (int i = 0; i < players.length; i++)
+        {
+            if (players[i] != null && players[i].getUsername().equals(username))
+            {
+                System.out.println("The player already exist.");
+                return;
+            }
+            else if (players[i] == null)
+            {
+                players[i] = new NimAIPlayer(username, familyName, givenName);
+                return;
+            }
+        }
     }
 
     public void removePlayer(String username) {
@@ -35,8 +56,9 @@ public class NimGame {
             return;
         }
         for (int player = 0; player < players.length; player++) {
-            if (players[player] != null && players[player].getUsername().equals(username)) {
-                players[player] = new NimPlayer();
+            if (players[player] != null && players[player].getUsername().equals(username))
+            {
+                players[player] = null;
                 return;
             }
         }
@@ -173,7 +195,9 @@ public class NimGame {
                     currentPlayers[1].getFamilyName(),
                     currentPlayers[1].getGivenName());
             return currentPlayers;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
