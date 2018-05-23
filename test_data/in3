@@ -1,0 +1,4 @@
+createplayer lskywalker,Skywalker,Luke
+addplayer lskywalker
+addplayer lskywalker,Skywalker,Luke
+exit

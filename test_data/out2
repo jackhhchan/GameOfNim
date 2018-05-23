@@ -1,0 +1,13 @@
+Welcome to Nim
+
+$george,George,Washington,2 games,0 wins
+jadams,John,Adams,3 games,2 wins
+jmadison,James,Madison,1 games,1 wins
+tom,Thomas,Jefferson,2 games,1 wins
+
+$100% | 01 games | James Madison
+67%  | 03 games | John Adams
+50%  | 02 games | Thomas Jefferson
+0%   | 02 games | George Washington
+
+$
